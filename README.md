@@ -1,27 +1,40 @@
 # Multi-Tenant SaaS Backend Platform
 
+[![NestJS](https://img.shields.io/badge/NestJS-10+-red.svg)](https://nestjs.com)
+[![Node.js Version](https://img.shields.io/badge/Node.js-18+-blue.svg)](https://nodejs.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/PkLavc/saas-backend-platform/actions)
+
+## Project Overview
+
 A production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications. This platform demonstrates modern backend architecture patterns including multi-tenancy, role-based access control, comprehensive authentication, and scalable service design.
 
-## 🎯 Project Overview
+## Architecture Overview
 
-This SaaS platform showcases enterprise-level backend development practices:
-
-- **Multi-Tenant Architecture**: Row-level security with organization-based data isolation
-- **Enterprise Authentication**: JWT with role-based access control and secure password handling
-- **Scalable Service Design**: Clean architecture with dependency injection and modular organization
-- **Production-Ready Features**: Comprehensive validation, error handling, and logging
-- **Background Processing**: Asynchronous job handling with Redis queue management
-- **Payment Integration**: Mocked Stripe integration for subscription management
-- **API Design**: RESTful endpoints with pagination, filtering, and sorting
-- **Containerization**: Docker support for consistent deployment environments
-
-## 🏗️ Architecture Overview
-
+### Visual Request Lifecycle
+```mermaid
+graph TD
+    A[Client Request] --> B[Global Guards: JWT & RBAC]
+    B --> C[Global Interceptors: Logging/Transform]
+    C --> D[Feature Module: Controller]
+    D --> E[Service Layer: Business Logic]
+    E --> F[Repository Layer: Prisma ORM]
+    F --> G[(PostgreSQL: Row Level Isolation)]
+    
+    subgraph Async Operations
+        E --> H[BullMQ / Redis]
+        H --> I[Worker: Email/Billing]
+    end
 ```
-Client Request → Authentication → Authorization → Service Layer → Data Access
-     ↓              ↓              ↓              ↓              ↓
-HTTP Request    JWT Validation   RBAC Checks    Business Logic   Prisma ORM
-```
+
+### Engineering Impact & National Interest
+| Component | Implementation | Industry Value |
+| :--- | :--- | :--- |
+| **Data Isolation** | Row-Level Multi-tenancy | Essential for GDPR/CCPA compliance in SaaS |
+| **Security Architecture** | JWT + RBAC + Passport.js | Protects enterprise data against unauthorized access |
+| **Scalability** | Redis Queue + BullMQ Workers | Handles high-volume traffic without system degradation |
+| **Maintainability** | Clean Architecture & NestJS DI | Reduces long-term technical debt and operational costs |
 
 ### Core Architecture Patterns
 
@@ -32,7 +45,7 @@ HTTP Request    JWT Validation   RBAC Checks    Business Logic   Prisma ORM
 - **DTO Validation**: Comprehensive input validation and transformation
 - **Error Handling**: Centralized error handling with proper HTTP status codes
 
-## 🧱 Tech Stack
+## Tech Stack
 
 - **Language**: TypeScript 5.0+
 - **Runtime**: Node.js 18+
@@ -318,6 +331,9 @@ Stripe-Signature: <signature>
 - **Dependency injection**: Testable, maintainable code
 - **Validation**: class-validator for input validation
 
+### Technical Note on Data Isolation
+The platform implements a Shared Database, Shared Schema strategy. Data isolation is enforced at the service level through mandatory organizationId filters in every query. This approach balances cost-efficiency with the scalability required for high-growth startups.
+
 ## Testing
 
 ```bash
@@ -350,6 +366,11 @@ For production:
 3. Update documentation
 4. Use meaningful commit messages
 
-## License
+## Author
 
-This project is licensed under the MIT License.
+**Patrick - Computer Engineer** To view other projects and portfolio details, visit:
+[https://pklavc.github.io/projects.html](https://pklavc.github.io/projects.html)
+
+---
+
+*This project demonstrates advanced backend development capabilities for enterprise SaaS applications.*
