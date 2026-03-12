@@ -8,7 +8,10 @@
 
 ## Project Overview
 
-A production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications. This platform demonstrates modern backend architecture patterns including multi-tenancy, role-based access control, comprehensive authentication, and scalable service design.
+A robust production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications.
+## Getting Started
+
+Quick guide to set up and run the platform.
 
 ## Architecture Overview
 
