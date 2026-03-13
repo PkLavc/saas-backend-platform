@@ -8,7 +8,10 @@
 
 ## Project Overview
 
-A production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications. This platform demonstrates modern backend architecture patterns including multi-tenancy, role-based access control, comprehensive authentication, and scalable service design.
+A robust production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications.
+## Getting Started
+
+Quick guide to set up and run the platform.
 
 ## Architecture Overview
 
@@ -375,4 +378,16 @@ For production:
 
 *This project demonstrates advanced backend development capabilities for enterprise SaaS applications.*
 
+<<<<<<< HEAD
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+>>>>>>> 14bbba43 (Clean up project structure and update documentation)
+>>>>>>> 87cf431c
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+=======
+<<<<<<< HEAD
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+=======
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+>>>>>>> 14bbba43 (Clean up project structure and update documentation)
+>>>>>>> 87cf431c
