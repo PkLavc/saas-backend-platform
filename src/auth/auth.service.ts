@@ -44,27 +44,8 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto) {
     try {
-      // PostgreSQL-specific transaction with SERIALIZABLE isolation
+      // Atomic operation using connect to ensure organization exists and create user in one operation
       const user = await this.prisma.$transaction(async (tx) => {
-        // First: Validate organization exists
-        const organization = await tx.organization.findUnique({
-          where: { id: createUserDto.organizationId },
-        });
-
-        if (!organization) {
-          throw new Error('The specified Organization does not exist.');
-        }
-
-        // Second: Check if user already exists with explicit locking
-        const existingUser = await tx.user.findUnique({
-          where: { email: createUserDto.email },
-        });
-
-        if (existingUser) {
-          throw new Error('User already exists.');
-        }
-
-        // Third: Create the user with proper error handling
         const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
         
         return await tx.user.create({
@@ -73,8 +54,10 @@ export class AuthService {
             password: hashedPassword,
             firstName: createUserDto.firstName,
             lastName: createUserDto.lastName,
-            organizationId: createUserDto.organizationId,
             role: 'USER',
+            organization: {
+              connect: { id: createUserDto.organizationId }
+            }
           },
           include: {
             organization: {
@@ -85,10 +68,6 @@ export class AuthService {
             }
           }
         });
-      }, {
-        // PostgreSQL SERIALIZABLE isolation level for maximum consistency
-        isolationLevel: 'Serializable',
-        timeout: 10000,
       });
       
       // Enhanced logging for monitoring
@@ -107,13 +86,19 @@ export class AuthService {
     } catch (error) {
       this.logger.error('Error registering user:', error.message);
       
-      // PostgreSQL-specific error handling
+      // PostgreSQL-specific error handling for race conditions and constraints
       if (error.code === 'P2002') {
+        // Unique constraint violation - email already exists
         throw new Error('Email address is already in use');
       } else if (error.code === 'P2003') {
+        // Foreign key constraint violation - invalid organization
         throw new Error('Invalid organization reference');
       } else if (error.code === 'P2025') {
+        // Record not found - organization doesn't exist
         throw new Error('Organization not found');
+      } else if (error.code === 'P2034') {
+        // Transaction API error - likely serialization conflict
+        throw new Error('Concurrent modification detected, please retry');
       }
       
       throw error;
@@ -198,9 +183,6 @@ export class AuthService {
         }
 
         return registeredUsers;
-      }, {
-        isolationLevel: 'Serializable',
-        timeout: 30000, // 30 seconds for bulk operations
       });
 
       this.logger.log(`Bulk registration completed: ${results.length} users`);
@@ -262,9 +244,6 @@ export class AuthService {
         });
 
         return { user, organization };
-      }, {
-        isolationLevel: 'Serializable',
-        timeout: 15000,
       });
 
       this.logger.log(`User ${result.user.email} registered with organization ${result.organization.name}`);

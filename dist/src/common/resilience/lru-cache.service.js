@@ -16,11 +16,8 @@ let LRUCacheService = LRUCacheService_1 = class LRUCacheService {
     constructor() {
         this.logger = new common_1.Logger(LRUCacheService_1.name);
         this.cache = new Map();
-        this.maxSize = 500;
+        this.maxSize = 1000;
         this.defaultTTL = 300000;
-        this.cleanupInterval = setInterval(() => {
-            this.cleanup();
-        }, 60000);
     }
     set(key, value, ttl = this.defaultTTL) {
         const now = Date.now();
@@ -151,9 +148,7 @@ let LRUCacheService = LRUCacheService_1 = class LRUCacheService {
         };
     }
     onModuleDestroy() {
-        if (this.cleanupInterval) {
-            clearInterval(this.cleanupInterval);
-        }
+        this.logger.debug('LRUCacheService destroyed');
     }
 };
 exports.LRUCacheService = LRUCacheService;

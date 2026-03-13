@@ -1,9 +1,16 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { MockDatabaseService } from '../common/mocks/mock-database.service';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   private isMockMode = false;
+  private mockDatabase: MockDatabaseService;
+
+  constructor(mockDatabase: MockDatabaseService) {
+    super();
+    this.mockDatabase = mockDatabase;
+  }
 
   async onModuleInit() {
     try {
@@ -14,10 +21,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       console.error('Database connection failed:', error.message);
       console.log('Running in mock mode - database operations will be simulated');
       this.isMockMode = true;
+      await this.mockDatabase.connect();
     }
   }
 
-  // Graceful degradation: return mock data when database is unavailable
-  // The model methods (user, organization, project, task) are inherited from PrismaClient
-  // When database is unavailable, we'll handle this at the repository level
+  getIsMockMode(): boolean {
+    return this.isMockMode;
+  }
 }

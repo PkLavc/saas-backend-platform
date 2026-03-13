@@ -13,14 +13,10 @@ export class LRUCacheService {
   private cache = new Map<string, CacheEntry<any>>();
   private maxSize: number;
   private defaultTTL: number;
-  private cleanupInterval: NodeJS.Timeout;
 
   constructor() {
-    this.maxSize = 500;           // Production-ready defaults
+    this.maxSize = 1000;          // Fixed size limit
     this.defaultTTL = 300000;      // 5 minutes default TTL
-    this.cleanupInterval = setInterval(() => {
-      this.cleanup();
-    }, 60000); // 1 minute cleanup
   }
 
   /**
@@ -40,7 +36,7 @@ export class LRUCacheService {
       return;
     }
 
-    // If cache is full, remove LRU entry
+    // If cache is full, remove LRU entry (memory leak prevention)
     if (this.cache.size >= this.maxSize) {
       this.evictLRU();
     }
@@ -226,11 +222,10 @@ export class LRUCacheService {
   }
 
   /**
-   * On module destroy - cleanup interval
+   * On module destroy - no cleanup needed (simplified version)
    */
   onModuleDestroy(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-    }
+    // No cleanup interval to clear in simplified version
+    this.logger.debug('LRUCacheService destroyed');
   }
 }

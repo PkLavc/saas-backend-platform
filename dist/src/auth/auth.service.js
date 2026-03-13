@@ -52,18 +52,6 @@ let AuthService = AuthService_1 = class AuthService {
     async register(createUserDto) {
         try {
             const user = await this.prisma.$transaction(async (tx) => {
-                const organization = await tx.organization.findUnique({
-                    where: { id: createUserDto.organizationId },
-                });
-                if (!organization) {
-                    throw new Error('The specified Organization does not exist.');
-                }
-                const existingUser = await tx.user.findUnique({
-                    where: { email: createUserDto.email },
-                });
-                if (existingUser) {
-                    throw new Error('User already exists.');
-                }
                 const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
                 return await tx.user.create({
                     data: {
@@ -71,8 +59,10 @@ let AuthService = AuthService_1 = class AuthService {
                         password: hashedPassword,
                         firstName: createUserDto.firstName,
                         lastName: createUserDto.lastName,
-                        organizationId: createUserDto.organizationId,
                         role: 'USER',
+                        organization: {
+                            connect: { id: createUserDto.organizationId }
+                        }
                     },
                     include: {
                         organization: {
@@ -83,9 +73,6 @@ let AuthService = AuthService_1 = class AuthService {
                         }
                     }
                 });
-            }, {
-                isolationLevel: 'Serializable',
-                timeout: 10000,
             });
             this.logger.log(`User registered successfully: ${user.email} in organization ${user.organization.name}`);
             try {
@@ -107,6 +94,9 @@ let AuthService = AuthService_1 = class AuthService {
             }
             else if (error.code === 'P2025') {
                 throw new Error('Organization not found');
+            }
+            else if (error.code === 'P2034') {
+                throw new Error('Concurrent modification detected, please retry');
             }
             throw error;
         }
@@ -162,9 +152,6 @@ let AuthService = AuthService_1 = class AuthService {
                     registeredUsers.push(user);
                 }
                 return registeredUsers;
-            }, {
-                isolationLevel: 'Serializable',
-                timeout: 30000,
             });
             this.logger.log(`Bulk registration completed: ${results.length} users`);
             return results;
@@ -211,9 +198,6 @@ let AuthService = AuthService_1 = class AuthService {
                     },
                 });
                 return { user, organization };
-            }, {
-                isolationLevel: 'Serializable',
-                timeout: 15000,
             });
             this.logger.log(`User ${result.user.email} registered with organization ${result.organization.name}`);
             return result;

@@ -3,7 +3,6 @@ export declare class LRUCacheService {
     private cache;
     private maxSize;
     private defaultTTL;
-    private cleanupInterval;
     constructor();
     set<T>(key: string, value: T, ttl?: number): void;
     get<T>(key: string): T | null;
