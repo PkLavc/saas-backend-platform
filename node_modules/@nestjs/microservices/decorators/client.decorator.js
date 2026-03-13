@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Client = Client;
+const constants_1 = require("../constants");
+/**
+ * Attaches the `ClientProxy` instance to the given property
+ *
+ * @param  {ClientOptions} metadata optional client metadata
+ *
+ * @publicApi
+ *
+ */
+function Client(metadata) {
+    return (target, propertyKey) => {
+        Reflect.set(target, propertyKey, null);
+        Reflect.defineMetadata(constants_1.CLIENT_METADATA, true, target, propertyKey);
+        Reflect.defineMetadata(constants_1.CLIENT_CONFIGURATION_METADATA, metadata, target, propertyKey);
+    };
+}

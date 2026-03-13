@@ -1,38 +1,40 @@
 version: '3.8'
 
 services:
-  db:
+  postgres:
     image: postgres:15
-    restart: always
+    container_name: saas-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: username
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: portfolio_saas
+      POSTGRES_DB: saas_backend
+      POSTGRES_USER: saas_user
+      POSTGRES_PASSWORD: saas_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - saas-network
 
-  redis:
-    image: redis:7-alpine
-    restart: always
-    ports:
-      - "6379:6379"
-
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-      - redis
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: saas-pgadmin
+    restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://username:password@db:5432/portfolio_saas?schema=public
-      - JWT_SECRET=your-secret-key
-      - REDIS_URL=redis://redis:6379
-    volumes:
-      - .:/app
-      - /app/node_modules
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - saas-network
 
 volumes:
   postgres_data:
+
+networks:
+  saas-network:
+    driver: bridge
