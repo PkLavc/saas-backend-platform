@@ -378,4 +378,8 @@ For production:
 
 *This project demonstrates advanced backend development capabilities for enterprise SaaS applications.*
 
+<<<<<<< HEAD
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+=======
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
+>>>>>>> 14bbba43 (Clean up project structure and update documentation)
