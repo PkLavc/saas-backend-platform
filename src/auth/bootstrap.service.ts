@@ -10,6 +10,11 @@ export class BootstrapService {
   constructor(private prisma: PrismaService) {}
 
   async setupSystem(setupDto: SetupSystemDto) {
+    // Prevent setup if Prisma is in mock mode (no real database available)
+    if (this.prisma.getIsMockMode()) {
+      throw new Error('Database connection failed - setup requires a real database connection');
+    }
+
     // Check if system is already initialized
     const existingUsers = await this.prisma.user.count();
     const existingOrgs = await this.prisma.organization.count();

@@ -20,6 +20,7 @@ let LRUCacheService = LRUCacheService_1 = class LRUCacheService {
         this.defaultTTL = 300000;
     }
     set(key, value, ttl = this.defaultTTL) {
+        this.cleanup();
         const now = Date.now();
         const expiry = now + ttl;
         if (this.cache.has(key)) {
@@ -81,6 +82,7 @@ let LRUCacheService = LRUCacheService_1 = class LRUCacheService {
         this.logger.debug('Cache cleared');
     }
     getStats() {
+        this.cleanup();
         const now = Date.now();
         let oldest = null;
         let newest = null;

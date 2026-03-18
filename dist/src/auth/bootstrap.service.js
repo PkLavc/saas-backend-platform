@@ -19,6 +19,9 @@ let BootstrapService = class BootstrapService {
         this.prisma = prisma;
     }
     async setupSystem(setupDto) {
+        if (this.prisma.getIsMockMode()) {
+            throw new Error('Database connection failed - setup requires a real database connection');
+        }
         const existingUsers = await this.prisma.user.count();
         const existingOrgs = await this.prisma.organization.count();
         if (existingUsers > 0 || existingOrgs > 0) {

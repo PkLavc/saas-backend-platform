@@ -23,6 +23,9 @@ export class LRUCacheService {
    * Set a value in the cache with optional TTL
    */
   set<T>(key: string, value: T, ttl: number = this.defaultTTL): void {
+    // Force cleanup before operation to prevent memory leaks
+    this.cleanup();
+    
     const now = Date.now();
     const expiry = now + ttl;
 
@@ -36,7 +39,7 @@ export class LRUCacheService {
       return;
     }
 
-    // If cache is full, remove LRU entry (memory leak prevention)
+    // If cache is full, remove LRU entry (strict size limit enforcement)
     if (this.cache.size >= this.maxSize) {
       this.evictLRU();
     }
@@ -125,6 +128,9 @@ export class LRUCacheService {
     oldestEntry: number | null;
     newestEntry: number | null;
   } {
+    // Force cleanup before getting stats to prevent memory leaks
+    this.cleanup();
+    
     const now = Date.now();
     let oldest = null;
     let newest = null;
