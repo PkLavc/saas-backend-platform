@@ -1,0 +1,13 @@
+{
+  "service": "backend-sim",
+  "project": "saas-backend-platform",
+  "status": "ok",
+  "source": "github-actions",
+  "lastUpdated": "pending-first-workflow-run",
+  "runId": "manual",
+  "metrics": {
+    "latencyMs": 104,
+    "successRate": 99.3,
+    "eventsProcessed": 2765
+  }
+}
