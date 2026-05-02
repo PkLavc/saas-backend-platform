@@ -3,12 +3,12 @@
   "project": "saas-backend-platform",
   "status": "ok",
   "source": "github-actions",
-  "lastUpdated": "2026-05-02T07:18:34Z",
-  "runId": "25246692936",
+  "lastUpdated": "2026-05-02T12:43:54Z",
+  "runId": "25252180292",
   "historyCount": 28,
   "metrics": {
-    "latencyMs": 72,
-    "successRate": 99.5,
-    "eventsProcessed": 961
+    "latencyMs": 118,
+    "successRate": 98.5,
+    "eventsProcessed": 5534
   }
 }
